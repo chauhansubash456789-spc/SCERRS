@@ -1,0 +1,17 @@
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Uploaded user files (photos, evidence)
+uploads/incidents/*
+!uploads/incidents/.gitkeep
+
+# Logs / temp
+*.log
+tmp/

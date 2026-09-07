@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SCERRS — Smart Citizen Emergency Reporting & Response System · Project Report</title>
+  <style>
+    :root {
+      --red: #e63946;
+      --red-dark: #c1121f;
+      --ink: #1a1a1a;
+      --mut: #6c757d;
+      --line: #e2e2e2;
+      --bg: #ffffff;
+      --alt: #faf7f6;
+      --head: #b0091a;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+      color: var(--ink);
+      line-height: 1.65;
+      margin: 0;
+      background: var(--bg);
+    }
+
+    .page {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 48px 40px;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      color: var(--head);
+      line-height: 1.25;
+    }
+
+    h1 {
+      font-size: 1.9rem;
+      margin: 0 0 4px;
+    }
+
+    h2 {
+      font-size: 1.45rem;
+      border-bottom: 2px solid var(--red);
+      padding-bottom: 6px;
+      margin-top: 44px;
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      margin-top: 28px;
+      color: var(--red-dark);
+    }
+
+    h4 {
+      font-size: 1rem;
+      margin-top: 20px;
+    }
+
+    p {
+      margin: 8px 0;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid var(--line);
+      margin: 28px 0;
+    }
+
+    .titlepage {
+      text-align: center;
+      padding: 80px 20px;
+    }
+
+    .titlepage .institute {
+      letter-spacing: 2px;
+      font-size: .9rem;
+      color: var(--mut);
+    }
+
+    .titlepage h1 {
+      color: var(--red-dark);
+      font-size: 2.1rem;
+      margin-top: 10px;
+    }
+
+    .titlepage .sub {
+      font-size: 1.1rem;
+      color: var(--mut);
+      margin: 8px 0 30px;
+    }
+
+    .titlepage .meta {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 22px;
+      margin-top: 36px;
+      display: inline-block;
+      text-align: left;
+      background: var(--alt);
+    }
+
+    .titlepage table td {
+      padding: 4px 14px;
+      border: none;
+    }
+
+    .toc ol {
+      columns: 2;
+      column-gap: 50px;
+      font-size: .95rem;
+    }
+
+    .toc a {
+      color: var(--red-dark);
+      text-decoration: none;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 14px 0;
+      font-size: .9rem;
+    }
+
+    th,
+    td {
+      border: 1px solid var(--line);
+      padding: 7px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--alt);
+      color: var(--head);
+    }
+
+    .kpi {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 10px 0;
+    }
+
+    .card {
+      flex: 1;
+      min-width: 120px;
+      background: var(--alt);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+    }
+
+    .card .n {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--red-dark);
+    }
+
+    .card .l {
+      font-size: .78rem;
+      color: var(--mut);
+    }
+
+    code {
+      background: var(--alt);
+      border: 1px solid var(--line);
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: .88em;
+      font-family: Consolas, monospace;
+    }
+
+    pre {
+      background: #1e1e1e;
+      color: #e8e8e8;
+      border-radius: 8px;
+      padding: 16px;
+      overflow: auto;
+      font-size: .82rem;
+      line-height: 1.5;
+    }
+
+    pre code {
+      background: none;
+      border: none;
+      color: inherit;
+      padding: 0;
+    }
+
+    .front {
+      list-style: none;
+      padding: 0;
+    }
+
+    .front li {
+      margin-bottom: 2px;
+    }
+
+    .center {
+      text-align: center;
+    }
+
+    .small {
+      font-size: .82rem;
+      color: var(--mut);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: .75rem;
+      color: #fff;
+    }
+
+    .b-red {
+      background: #e63946;
+    }
+
+    .b-amber {
+      background: #f4a261;
+    }
+
+    .b-green {
+      background: #2a9d8f;
+    }
+
+    .b-blue {
+      background: #457b9d;
+    }
+
+    .ref {
+      font-size: .88rem;
+    }
+
+    .ref li {
+      margin-bottom: 6px;
+    }
+
+    .figure {
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      padding: 18px;
+      text-align: center;
+      color: var(--mut);
+      background: var(--alt);
+      margin: 14px 0;
+    }
+
+    .figure .cap {
+      font-size: .8rem;
+      color: var(--mut);
+      margin-top: 8px;
+    }
+
+    .pagebreak {
+      page-break-before: always;
+    }
+
+    @media print {
+      .pagebreak {
+        page-break-before: always;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+
+    <!-- ===================== FRONT MATTER ===================== -->
+    <div class="titlepage pagebreak">
+      <div class="institute">TRIBHUVAN UNIVERSITY</div>
+      <div>FACULTY OF HUMANITIES AND SOCIAL SCIENCES</div>
+      <div>BACHELOR OF COMPUTER APPLICATION (BCA)</div>
+      <h1>SCERRS</h1>
+      <div class="sub">Smart Citizen Emergency Reporting &amp; Response System<br>
+        <span class="small">Fourth Semester Project Report · Subject: CACS256 (Project I)</span>
+      </div>
+
+      <div class="meta">
+        <table>
+          <tr>
+            <td><strong>Submitted To:</strong></td>
+            <td>Department of Computer Application</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>Tribhuvan University</td>
+          </tr>
+          <tr>
+            <td><strong>Submitted By:</strong></td>
+            <td>Subash Prasad Chauhan</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>Nirjal Basnet</td>
+          </tr>
+          <tr>
+            <td><strong>Supervisor:</strong></td>
+            <td>______________________________</td>
+          </tr>
+          <tr>
+            <td><strong>Academic Year:</strong></td>
+            <td>2025/2026</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- CERTIFICATION PAGE -->
+    <div class="pagebreak">
+      <h2>CERTIFICATE OF APPROVAL</h2>
+      <p class="small center">(Copy of supervisor's progress report &amp; approval)</p>
+      <hr>
+      <p>This is to certify that the project proposal titled <strong>"SCERRS — Smart Citizen Emergency Reporting &amp;
+          Response System"</strong> has been prepared and submitted by <strong>Subash Prasad Chauhan</strong> and
+        <strong>Nirjal Basnet</strong> of Bachelor of Computer Application, in partial fulfillment of the requirements
+        for the award of the degree of <strong>Bachelor of Computer Application (BCA)</strong>, Tribhuvan University.
+        The project has been supervised and approved.</p>
+      <div style="margin-top:90px;display:flex;justify-content:space-between;">
+        <div class="center"><span>_______________________</span><br><small>Supervisor / Lecturer</small></div>
+        <div class="center"><span>_______________________</span><br><small>Head of Department</small></div>
+        <div class="center"><span>_______________________</span><br><small>External Examiner</small></div>
+      </div>
+      <hr>
+      <div class="center small">Date: ______________________</div>
+    </div>
+
+    <!-- DECLARATION -->
+    <div class="pagebreak">
+      <h2>DECLARATION</h2>
+      <p>We hereby declare that the work presented in this project titled <strong>"SCERRS — Smart Citizen Emergency
+          Reporting &amp; Response System"</strong> is our own original work and has not been submitted elsewhere for
+        the award of any degree. All external sources have been duly acknowledged.</p>
+      <div style="margin-top:90px;display:flex;justify-content:space-between;">
+        <div class="center"><span>_______________________</span><br><small>Subash Prasad Chauhan</small></div>
+        <div class="center"><span>_______________________</span><br><small>Nirjal Basnet</small></div>
+      </div>
+      <div class="center small" style="margin-top:20px;">Date: ______________________</div>
+    </div>
+
+    <!-- ACKNOWLEDGEMENT -->
+    <div class="pagebreak">
+      <h2>ACKNOWLEDGEMENT</h2>
+      <p>We would like to express our sincere gratitude to our project supervisor for the invaluable guidance and
+        constructive feedback provided throughout the development of this project. We are also thankful to the Head of
+        Department and all the faculty members of the Department of Computer Application for their continuous support
+        and encouragement.</p>
+      <p>We extend our appreciation to our classmates and friends who offered suggestions during testing, and to our
+        families for their patience and support. Finally, we thank the open-source community for the free and reliable
+        technologies — PHP, MySQL, Bootstrap, Chart.js, and Leaflet — that made this project possible.</p>
+    </div>
+
+    <h2>TABLE OF CONTENTS</h2>
+    <div class="toc">
+      <ol>
+        <li><a href="#ch1">Chapter 1: Introduction</a></li>
+        <li><a href="#ch2">Chapter 2: System Analysis</a></li>
+        <li><a href="#ch3">Chapter 3: System Design</a></li>
+        <li><a href="#ch4">Chapter 4: Implementation and Testing</a></li>
+        <li><a href="#ch5">Chapter 5: Conclusion and Future Recommendations</a></li>
+        <li><a href="#ref">References</a></li>
+        <li><a href="#app">Appendices</a></li>
+      </ol>
+    </div>
+
+    <!-- ===================== CHAPTER 1 ===================== -->
+    <h2 id="ch1" class="pagebreak">CHAPTER 1: INTRODUCTION</h2>
+
+    <h3>1.1 Background of the Project</h3>
+    <p>Emergency response is a time-critical activity in which every second counts. In Nepal, natural disasters such as
+      earthquakes, floods, and landslides, together with daily road accidents, fires, and medical emergencies, place
+      persistent pressure on limited response resources. Traditional methods of reporting emergencies — phone calls to
+      separate control rooms, manual note-taking, and paper-based records — are slow, error-prone, and fragmented across
+      multiple agencies. There is often no single channel through which a citizen can report a situation and track its
+      resolution, and no shared view for the agencies that must coordinate.</p>
+    <p>SCERRS (Smart Citizen Emergency Reporting &amp; Response System) addresses this gap by providing a unified,
+      web-based platform. Citizens can report an emergency in seconds with automatic GPS location capture and photo
+      evidence. The report is automatically routed to the correct responding agency based on the incident category, and
+      the status is tracked in real time through a transparent workflow. This reduces response time, improves
+      coordination between agencies, and increases transparency for the citizen.</p>
+
+    <h3>1.2 Problem Statement</h3>
+    <p>In the current emergency reporting landscape of Nepal there is a lack of an integrated, digital reporting system.
+      The identified problems are:</p>
+    <ul>
+      <li>No single channel for citizens to report an emergency and provide precise location and photo evidence.</li>
+      <li>Manual routing of reports to the correct agency causes delays and misdirection.</li>
+      <li>No real-time status tracking for citizens once a report is submitted.</li>
+      <li>Limited coordination and shared situational awareness between responding agencies.</li>
+      <li>No centralized analytics to guide resource planning and preparedness.</li>
+    </ul>
+
+    <h3>1.3 Objectives</h3>
+    <p>The main objectives of the project are:</p>
+    <ol>
+      <li>To design and develop a web-based emergency reporting system for citizens.</li>
+      <li>To enable automatic routing of reports to the correct responding agency.</li>
+      <li>To provide role-based dashboards for citizens, authorities, and administrators.</li>
+      <li>To offer real-time status tracking and notifications.</li>
+      <li>To present an interactive live map and analytics dashboard for situational awareness.</li>
+      <li>To build a secure system using modern authentication and data-protection practices.</li>
+    </ol>
+
+    <h3>1.4 Scope of the Project</h3>
+    <p>The system covers the full lifecycle of an emergency report: citizen registration and login; incident reporting
+      with category, severity, GPS, address, and photo evidence; automatic routing to a department; authority
+      acknowledgment, dispatch, and resolution; team assignment; status history auditing; in-app notifications; citizen
+      feedback; and an analytics dashboard. The scope is limited to a web application (not a native mobile app), spans
+      five departments (Police, Fire Brigade, Ambulance, Municipality, and Disaster Management), and supports three user
+      roles (citizen, authority, admin).</p>
+
+    <h3>1.5 Feasibility Study</h3>
+    <h4>Technical Feasibility</h4>
+    <p>The system uses mature, freely available technologies — PHP, MySQL, Bootstrap, Chart.js, and
+      Leaflet/OpenStreetMap — all well documented and suited to the developers' BCA-level skills. No specialized
+      hardware is required beyond a standard web server and internet-enabled client devices with GPS. Hence it is
+      technically feasible.</p>
+    <h4>Operational Feasibility</h4>
+    <p>Role-based interfaces map directly to each user group's workflow, and the web interface requires no client
+      installation. Thus it is operationally feasible.</p>
+    <h4>Economic Feasibility</h4>
+    <p>All components are open source; development runs on a free Laragon stack. No licensing or proprietary hardware
+      costs are involved, making the project economically feasible.</p>
+
+    <h3>1.6 Tools and Technologies Used</h3>
+    <table>
+      <tr>
+        <th>Category</th>
+        <th>Technology</th>
+      </tr>
+      <tr>
+        <td>Backend</td>
+        <td>PHP 8.3 (procedural, PDO)</td>
+      </tr>
+      <tr>
+        <td>Database</td>
+        <td>MySQL / MariaDB</td>
+      </tr>
+      <tr>
+        <td>Frontend</td>
+        <td>HTML5, CSS3, Vanilla JavaScript</td>
+      </tr>
+      <tr>
+        <td>UI Kit</td>
+        <td>Bootstrap 5.3.3 + Bootstrap Icons 1.11</td>
+      </tr>
+      <tr>
+        <td>Maps</td>
+        <td>Leaflet 1.9.4 + OpenStreetMap tiles</td>
+      </tr>
+      <tr>
+        <td>Charts</td>
+        <td>Chart.js 4.4.3</td>
+      </tr>
+      <tr>
+        <td>Auth</td>
+        <td>PHP sessions + password_hash() (bcrypt)</td>
+      </tr>
+      <tr>
+        <td>Environment</td>
+        <td>Laragon (Apache + PHP + MySQL), phpMyAdmin</td>
+      </tr>
+      <tr>
+        <td>Version Control</td>
+        <td>Git</td>
+      </tr>
+    </table>
+
+    <!-- ===================== CHAPTER 2 ===================== -->
+    <h2 id="ch2" class="pagebreak">CHAPTER 2: SYSTEM ANALYSIS</h2>
+
+    <h3>2.1 Requirement Analysis</h3>
+    <h4>Functional Requirements</h4>
+    <table>
+      <tr>
+        <th>ID</th>
+        <th>Role</th>
+        <th>Requirement</th>
+      </tr>
+      <tr>
+        <td>FR-01</td>
+        <td>Citizen</td>
+        <td>Register with name, email, password, phone, and identity details.</td>
+      </tr>
+      <tr>
+        <td>FR-02</td>
+        <td>All</td>
+        <td>Log in / log out with session-based authentication.</td>
+      </tr>
+      <tr>
+        <td>FR-03</td>
+        <td>Citizen</td>
+        <td>Report an incident with category, title, description, severity, GPS, and photo.</td>
+      </tr>
+      <tr>
+        <td>FR-04</td>
+        <td>Citizen</td>
+        <td>View personal incident list and live status.</td>
+      </tr>
+      <tr>
+        <td>FR-05</td>
+        <td>Citizen</td>
+        <td>View incident detail with photo gallery, timeline, team, and location map.</td>
+      </tr>
+      <tr>
+        <td>FR-06</td>
+        <td>Citizen</td>
+        <td>Edit a pending incident before it is locked.</td>
+      </tr>
+      <tr>
+        <td>FR-07</td>
+        <td>Citizen</td>
+        <td>Submit a rating/comment on a resolved incident.</td>
+      </tr>
+      <tr>
+        <td>FR-08</td>
+        <td>Citizen</td>
+        <td>Receive in-app notifications for status changes.</td>
+      </tr>
+      <tr>
+        <td>FR-09</td>
+        <td>Authority</td>
+        <td>View dashboard with KPI cards, live map, filters, and search.</td>
+      </tr>
+      <tr>
+        <td>FR-10</td>
+        <td>Authority</td>
+        <td>View routed incident detail with reporter info and status history.</td>
+      </tr>
+      <tr>
+        <td>FR-11</td>
+        <td>Authority</td>
+        <td>Update status workflow (acknowledge → in progress → resolved / rejected).</td>
+      </tr>
+      <tr>
+        <td>FR-12</td>
+        <td>Authority</td>
+        <td>Assign response teams to incidents.</td>
+      </tr>
+      <tr>
+        <td>FR-13</td>
+        <td>Authority</td>
+        <td>View analytics charts and trend data.</td>
+      </tr>
+      <tr>
+        <td>FR-14</td>
+        <td>Admin</td>
+        <td>Manage users (create authority accounts, manage citizens).</td>
+      </tr>
+      <tr>
+        <td>FR-15</td>
+        <td>Admin</td>
+        <td>Manage incident categories and response teams.</td>
+      </tr>
+      <tr>
+        <td>FR-16</td>
+        <td>Admin</td>
+        <td>View all incidents across all departments.</td>
+      </tr>
+    </table>
+
+    <h4>Non-Functional Requirements</h4>
+    <table>
+      <tr>
+        <th>Category</th>
+        <th>Requirement</th>
+      </tr>
+      <tr>
+        <td>Performance</td>
+        <td>Page load under 3 seconds; map and analytics data under 1 second.</td>
+      </tr>
+      <tr>
+        <td>Security</td>
+        <td>bcrypt password hashing; PDO prepared statements; HTML escaping; CSRF tokens; role-based access control
+          (RBAC); session regeneration on login.</td>
+      </tr>
+      <tr>
+        <td>Usability</td>
+        <td>Intuitive role-based interfaces; responsive layout; light/dark theme; color-coded severity badges.</td>
+      </tr>
+      <tr>
+        <td>Reliability</td>
+        <td>Transactional writes for incident + media; foreign-key integrity; clear error messages.</td>
+      </tr>
+      <tr>
+        <td>Maintainability</td>
+        <td>Modular file structure; consistent naming; commented code.</td>
+      </tr>
+    </table>
+
+    <h3>2.2 System Requirements</h3>
+    <h4>Hardware Requirements</h4>
+    <table>
+      <tr>
+        <th>Component</th>
+        <th>Server</th>
+        <th>Client</th>
+      </tr>
+      <tr>
+        <td>Processor</td>
+        <td>Dual-core 2.0 GHz or higher</td>
+        <td>Any modern device</td>
+      </tr>
+      <tr>
+        <td>Memory</td>
+        <td>2 GB RAM minimum</td>
+        <td>1 GB RAM</td>
+      </tr>
+      <tr>
+        <td>Storage</td>
+        <td>5 GB free space</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td>Network</td>
+        <td>LAN / Internet</td>
+        <td>Internet + GPS capability</td>
+      </tr>
+    </table>
+    <h4>Software Requirements</h4>
+    <ul>
+      <li>Operating System: Windows / Linux / macOS</li>
+      <li>Web Server: Apache 2.4+</li>
+      <li>Scripting: PHP 8.0+ (developed on 8.3)</li>
+      <li>Database: MySQL 5.7+ / MariaDB</li>
+      <li>Browser: Chrome, Firefox, Edge (modern versions)</li>
+    </ul>
+
+    <!-- ===================== CHAPTER 3 ===================== -->
+    <h2 id="ch3" class="pagebreak">CHAPTER 3: SYSTEM DESIGN</h2>
+
+    <h3>3.1 Architecture Design</h3>
+    <p>SCERRS follows a three-tier client-server architecture separating presentation, application logic, and data.</p>
+    <div class="figure">BROWSER (HTML/CSS/JS · Bootstrap · Leaflet · Chart.js)<br>↓ HTTPS ↓<br>APPLICATION (PHP 8.3 ·
+      PDO · Session Auth)<br>↓ ↓<br>DATA TIER (MySQL: scerrs database)<br>
+      <div class="cap">Fig. 3.1 — Three-tier architecture</div>
+    </div>
+
+    <h3>3.2 Process Modelling (DFD)</h3>
+    <h4>DFD Level 0 (Context Diagram)</h4>
+    <p>The context diagram shows the system as a single process interacting with three external entities:
+      <strong>Citizen</strong>, <strong>Authority</strong>, and <strong>Administrator</strong>. Citizens supply incident
+      reports, feedback, and edits; authorities supply status updates, team assignments, and queries; administrators
+      supply user/category/team management. The system returns notifications, status updates, dashboards, and analytics.
+    </p>
+    <div class="figure">Citizen ──▶ [SCERRS System] ◀── Authority<br> Administrator<br>
+      <div class="cap">Fig. 3.2 — DFD Level 0 (Context Diagram)</div>
+    </div>
+
+    <h4>DFD Level 1</h4>
+    <p>The system is decomposed into four main processes:</p>
+    <ul>
+      <li><strong>Process 1 — User Management:</strong> registration, login, session control, profile.</li>
+      <li><strong>Process 2 — Incident Processing:</strong> report creation, validation, media storage, ref_no
+        generation.</li>
+      <li><strong>Process 3 — Routing &amp; Response:</strong> category→department routing, status workflow, team
+        assignment.</li>
+      <li><strong>Process 4 — Reporting &amp; Analytics:</strong> dashboards, charts, map data, notifications, feedback.
+      </li>
+    </ul>
+
+    <h3>3.3 Data Modelling (ER Diagram)</h3>
+    <p>The entity-relationship model is centered on the <strong>Incident</strong> entity, which connects citizens,
+      categories, and departments. The core entities and their relationships are:</p>
+    <table>
+      <tr>
+        <th>Entity</th>
+        <th>Key Attributes</th>
+      </tr>
+      <tr>
+        <td>User</td>
+        <td>id, name, email, password, role, department_id</td>
+      </tr>
+      <tr>
+        <td>Department</td>
+        <td>id, name, code</td>
+      </tr>
+      <tr>
+        <td>Category</td>
+        <td>id, name, department_id, icon, active</td>
+      </tr>
+      <tr>
+        <td>Incident</td>
+        <td>id, ref_no, user_id, category_id, lat/long, severity, status</td>
+      </tr>
+      <tr>
+        <td>Incident_Media</td>
+        <td>id, incident_id, file_path</td>
+      </tr>
+      <tr>
+        <td>Response_Team</td>
+        <td>id, name, department_id, contact</td>
+      </tr>
+      <tr>
+        <td>Assignment</td>
+        <td>id, incident_id, team_id, assigned_by, note</td>
+      </tr>
+      <tr>
+        <td>Status_History</td>
+        <td>id, incident_id, status, changed_by, note</td>
+      </tr>
+      <tr>
+        <td>Notification</td>
+        <td>id, user_id, incident_id, message, is_read</td>
+      </tr>
+      <tr>
+        <td>Feedback</td>
+        <td>id, incident_id, user_id, rating, comment</td>
+      </tr>
+    </table>
+    <p>Key relationships: User 1:M Incident; Department 1:M Category; Category 1:M Incident; Incident 1:M
+      Incident_Media; Incident 1:M Status_History; Incident 1:M Assignment; Response_Team 1:M Assignment; Incident 1:1
+      Feedback (per user); User 1:M Notification.</p>
+    <div class="figure">[User]──1◀──M[Incident]──M──1▶[Category]──M──1▶[Department]<br>
+      [Incident]──1──M[Incident_Media]&nbsp;&nbsp;[Incident]──1──M[Status_History]<br>
+      [Incident]──M──1[Assignment]──M──1[Response_Team]<br>
+      [Incident]──1──1[Feedback]&nbsp;&nbsp;[User]──1──M[Notification]<br>
+      <div class="cap">Fig. 3.3 — Entity-Relationship Diagram (summary)</div>
+    </div>
+
+    <h3>3.4 Database Schema Design</h3>
+    <p>The database, named <code>scerrs</code>, uses InnoDB engine with utf8mb4 charset. The principal tables are
+      described below.</p>
+    <h4>Table: users</h4>
+    <table>
+      <tr>
+        <th>Field</th>
+        <th>Type</th>
+        <th>Constraints</th>
+      </tr>
+      <tr>
+        <td>id</td>
+        <td>INT UNSIGNED</td>
+        <td>PK, AUTO_INCREMENT</td>
+      </tr>
+      <tr>
+        <td>name</td>
+        <td>VARCHAR(120)</td>
+        <td>NOT NULL</td>
+      </tr>
+      <tr>
+        <td>email</td>
+        <td>VARCHAR(150)</td>
+        <td>UNIQUE, NOT NULL</td>
+      </tr>
+      <tr>
+        <td>password</td>
+        <td>VARCHAR(255)</td>
+        <td>NOT NULL</td>
+      </tr>
+      <tr>
+        <td>role</td>
+        <td>ENUM(citizen,authority,admin)</td>
+        <td>DEFAULT 'citizen'</td>
+      </tr>
+      <tr>
+        <td>department_id</td>
+        <td>INT UNSIGNED</td>
+        <td>FK → departments(id) ON DELETE SET NULL</td>
+      </tr>
+      <tr>
+        <td>active</td>
+        <td>TINYINT(1)</td>
+        <td>DEFAULT 1</td>
+      </tr>
+    </table>
+    <h4>Table: incidents</h4>
+    <table>
+      <tr>
+        <th>Field</th>
+        <th>Type</th>
+        <th>Constraints</th>
+      </tr>
+      <tr>
+        <td>id</td>
+        <td>INT UNSIGNED</td>
+        <td>PK, AUTO_INCREMENT</td>
+      </tr>
+      <tr>
+        <td>ref_no</td>
+        <td>VARCHAR(20)</td>
+        <td>UNIQUE, NOT NULL</td>
+      </tr>
+      <tr>
+        <td>user_id</td>
+        <td>INT UNSIGNED</td>
+        <td>FK → users(id) ON DELETE CASCADE</td>
+      </tr>
+      <tr>
+        <td>category_id</td>
+        <td>INT UNSIGNED</td>
+        <td>FK → categories(id)</td>
+      </tr>
+      <tr>
+        <td>title</td>
+        <td>VARCHAR(150)</td>
+        <td>NOT NULL</td>
+      </tr>
+      <tr>
+        <td>description</td>
+        <td>TEXT</td>
+        <td>NOT NULL</td>
+      </tr>
+      <tr>
+        <td>latitude / longitude</td>
+        <td>DECIMAL(10,7)</td>
+        <td>NOT NULL</td>
+      </tr>
+      <tr>
+        <td>address</td>
+        <td>VARCHAR(255)</td>
+        <td>NULL</td>
+      </tr>
+      <tr>
+        <td>severity</td>
+        <td>ENUM(low,medium,high,critical)</td>
+        <td>DEFAULT 'medium'</td>
+      </tr>
+      <tr>
+        <td>status</td>
+        <td>ENUM(pending,acknowledged,in_progress,resolved,rejected)</td>
+        <td>DEFAULT 'pending'</td>
+      </tr>
+    </table>
+    <p>The same discipline is applied to the remaining tables — <code>categories</code>, <code>incident_media</code>,
+      <code>response_teams</code>, <code>assignments</code>, <code>status_histories</code>, <code>notifications</code>,
+      and <code>feedback</code> — each with appropriate foreign keys and indexes to preserve referential integrity and
+      query performance.</p>
+
+    <h3>3.5 Request-Routing / Department Mapping</h3>
+    <p>A central design decision is that each incident is automatically routed to <strong>one department</strong>
+      determined by its category. The category-to-department mapping (from seed data) is:</p>
+    <table>
+      <tr>
+        <th>Department</th>
+        <th>Categories</th>
+      </tr>
+      <tr>
+        <td>Nepal Police</td>
+        <td>Road Accident, Crime / Violence</td>
+      </tr>
+      <tr>
+        <td>Fire Brigade</td>
+        <td>Fire Outbreak</td>
+      </tr>
+      <tr>
+        <td>Ambulance Services</td>
+        <td>Medical Emergency</td>
+      </tr>
+      <tr>
+        <td>Municipality</td>
+        <td>Fallen Tree / Debris, Road Hazard, Electricity Hazard</td>
+      </tr>
+      <tr>
+        <td>Disaster Management Agency</td>
+        <td>Flood, Landslide, Earthquake Damage</td>
+      </tr>
+    </table>
+    <p>Consequently, an authority dashboard only shows incidents whose <code>category.department_id</code> equals the
+      authority's own <code>users.department_id</code>. This by-design isolation is a key behavior verified during
+      testing.</p>
+
+    <!-- ===================== CHAPTER 4 ===================== -->
+    <h2 id="ch4" class="pagebreak">CHAPTER 4: IMPLEMENTATION AND TESTING</h2>
+
+    <h3>4.1 Implementation Approach</h3>
+    <p>The system was built with a modular, procedural PHP structure keeping concerns separated for maintainability. The
+      <code>includes/</code> folder holds shared header, footer, and security/helper functions; each role uses its own
+      directory (<code>citizen/</code>, <code>authority/</code>, <code>admin/</code>); reusable JSON endpoints live in
+      <code>api/</code>.</p>
+
+    <h3>4.2 Module Implementation Details</h3>
+
+    <h4>Module A — Authentication &amp; Session Management</h4>
+    <p>Implemented in <code>auth/login.php</code>, <code>auth/register.php</code>, and <code>auth/logout.php</code>.
+      Registration distinguishes citizen and authority/ admin fields. Passwords are hashed with
+      <code>password_hash()</code> (bcrypt) and verified with <code>password_verify()</code>. On login,
+      <code>session_regenerate_id(true)</code> prevents session fixation. Helper functions <code>current_user()</code>
+      and <code>require_role()</code> gate access by role.</p>
+    <pre><code>// login.php (simplified)
+if (password_verify($password, $user['password'])) {
+    session_regenerate_id(true);
+    $_SESSION['user_id'] = (int)$user['id'];
+    redirect($allow['role_home'][$user['role']]);
+}
+</code></pre>
+
+    <h4>Module B — Incident Reporting</h4>
+    <p>Implemented in <code>citizen/report_new.php</code>. Captures category, title, description, severity, GPS, and up
+      to five photos. A unique reference number is generated as <code>INC-YYYY-XXXX</code>. Inputs are validated, photo
+      MIME types and sizes are checked (image, ≤ 5 MB), and a database transaction inserts the incident and each media
+      row atomically.</p>
+    <pre><code>$pdo->beginTransaction();
+insert('incidents', $incident);
+$incidentId = $pdo->lastInsertId();
+foreach ($files as $f) insert('incident_media', ['incident_id'=>$incidentId, 'file_path'=>$f]);
+$pdo->commit();
+</code></pre>
+
+    <h4>Module C — Routing &amp; Response Workflow</h4>
+    <p>Implemented in <code>authority/incident_view.php</code>. The authority can update the status (acknowledge,
+      in_progress, resolved, rejected) with an optional note, and assign response teams from their department. Each
+      change is inserted into <code>status_histories</code> for the audit trail, and a notification is created for the
+      reporting citizen.</p>
+
+    <h4>Module D — Live Map</h4>
+    <p>Implemented in <code>authority/dashboard.php</code> with <code>api/map_data.php</code>. On load,
+      <code>loadMarkers()</code> fetches routed incidents via AJAX and renders Leaflet circle markers whose color and
+      radius encode severity (low→green, medium→yellow, high→orange, critical→red).</p>
+
+    <h4>Module E — Analytics Dashboard</h4>
+    <p>Implemented in <code>authority/analytics.php</code> with <code>api/analytics_data.php</code>. Aggregated queries
+      feed four Chart.js charts: incidents by category (bar), severity distribution (doughnut), status pipeline (pie),
+      and a 14-day trend (line). Loading spinners, empty states, and error handling are included.</p>
+
+    <h4>Module F — Notifications &amp; Feedback</h4>
+    <p>The navbar shows an unread-notification badge; citizens can mark notifications read and can submit a star rating
+      plus optional comment on resolved incidents, stored in <code>feedback</code> with a uniqueness constraint per
+      incident–user pair.</p>
+
+    <div class="figure">[Citizen Dashboard · Login · Report Form · Incident Detail ← insert screenshots]<br>
+      [Authority Dashboard Map · Analytics ← insert screenshots]<br>
+      [Admin Users / Categories / Teams ← insert screenshots]<br>
+      <div class="cap">Fig. 4.1 — Screen captures (place actual images here)</div>
+    </div>
+
+    <h3>4.3 Testing Strategy</h3>
+    <p>Testing followed unit and system (end-to-end) levels. Unit tests exercised each module with valid and invalid
+      inputs. System tests validated real user flows across roles. All core test cases produced expected results.</p>
+
+    <h4>Unit Test Cases</h4>
+    <table>
+      <tr>
+        <th>ID</th>
+        <th>Module</th>
+        <th>Input</th>
+        <th>Expected Output</th>
+        <th>Result</th>
+      </tr>
+      <tr>
+        <td>UT-01</td>
+        <td>Auth</td>
+        <td>Valid credentials</td>
+        <td>Login success</td>
+        <td>Pass</td>
+      </tr>
+      <tr>
+        <td>UT-02</td>
+        <td>Auth</td>
+        <td>Invalid password</td>
+        <td>Error, stay on login</td>
+        <td>Pass</td>
+      </tr>
+      <tr>
+        <td>UT-03</td>
+        <td>Auth</td>
+        <td>Duplicate email</td>
+        <td>Validation error</td>
+        <td>Pass</td>
+      </tr>
+      <tr>
+        <td>UT-04</td>
+        <td>Incident</td>
+        <td>Valid report</td>
+        <td>Created, ref_no generated</td>
+        <td>Pass</td>
+      </tr>
+      <tr>
+        <td>UT-05</td>
+        <td>Incident</td>
+        <td>Missing description</td>
+        <td>Validation error</td>
+        <td>Pass</td>
+      </tr>
+      <tr>
+        <td>UT-06</td>
+        <td>Incident</td>
+        <td>Non-image upload</td>
+        <td>Rejected</td>
+        <td>Pass</td>
+      </tr>
+      <tr>
+        <td>UT-07</td>
+        <td>Incident</td>
+        <td>File &gt; 5 MB</td>
+        <td>Rejected</td>
+        <td>Pass</td>
+      </tr>
+      <tr>
+        <td>UT-08</td>
+        <td>Routing</td>
+        <td>Fire Outbreak category</td>
+        <td>Routed to Fire (dept 2)</td>
+        <td>Pass</td>
+      </tr>
+      <tr>
+        <td>UT-09</td>
+        <td>Routing</td>
+        <td>Earthquake Damage category</td>
+        <td>Routed to Disaster (dept 5)</td>
+        <td>Pass</td>
+      </tr>
+      <tr>
+        <td>UT-10</td>
+        <td>Status</td>
+        <td>Authority acknowledges</td>
+        <td>Status + history recorded</td>
+        <td>Pass</td>
+      </tr>
+      <tr>
+        <td>UT-11</td>
+        <td>Auth</td>
+        <td>Citizen opens admin page</td>
+        <td>Access denied / redirect</td>
+        <td>Pass</td>
+      </tr>
+    </table>
+
+    <h4>System Test Cases</h4>
+    <table>
+      <tr>
+        <th>ID</th>
+        <th>Scenario</th>
+        <th>Expected Outcome</th>
+        <th>Result</th>
+      </tr>
+      <tr>
+        <td>ST-01</td>
+        <td>Register → login → report → view dashboard</td>
+        <td>Incident listed as pending</td>
+        <td>Pass</td>
+      </tr>
+      <tr>
+        <td>ST-02</td>
+        <td>Citizen reports Road Accident</td>
+        <td>Appears on Police authority dashboard</td>
+        <td>Pass</td>
+      </tr>
+      <tr>
+        <td>ST-03</td>
+        <td>Authority acknowledges → dispatches → resolves</td>
+        <td>Status flows; notification sent</td>
+        <td>Pass</td>
+      </tr>
+      <tr>
+        <td>ST-04</td>
+        <td>Load authority dashboard map</td>
+        <td>Routed incident marker rendered</td>
+        <td>Pass</td>
+      </tr>
+      <tr>
+        <td>ST-05</td>
+        <td>View analytics page</td>
+        <td>KPI cards + four charts render</td>
+        <td>Pass</td>
+      </tr>
+      <tr>
+        <td>ST-06</td>
+        <td>Status change on citizen's incident</td>
+        <td>Unread notification badge shown</td>
+        <td>Pass</td>
+      </tr>
+      <tr>
+        <td>ST-07</td>
+        <td>Citizen rates resolved incident</td>
+        <td>Rating saved and displayed</td>
+        <td>Pass</td>
+      </tr>
+      <tr>
+        <td>ST-08</td>
+        <td>Police dept tries to view Disaster-only incident</td>
+        <td>Not visible (dept isolation)</td>
+        <td>Pass</td>
+      </tr>
+    </table>
+    <p class="small">Note: ST-08 confirms the department-based isolation documented in §3.5 — incidents are not visible
+      to unrelated agencies by design.</p>
+
+    <!-- ===================== CHAPTER 5 ===================== -->
+    <h2 id="ch5" class="pagebreak">CHAPTER 5: CONCLUSION AND FUTURE RECOMMENDATIONS</h2>
+
+    <h3>5.1 Lessons Learnt</h3>
+    <ul>
+      <li>Careful relational design with foreign keys is essential to avoid data-integrity and routing errors.</li>
+      <li>Security basics — prepared statements, bcrypt hashing, CSRF tokens, and RBAC — are mandatory for a multi-user
+        web system.</li>
+      <li>Agile, incremental development (auth → reporting → routing → response → analytics) enabled systematic testing
+        and refinement.</li>
+      <li>The correctness of agency routing depends entirely on the category–department mapping, which governs which
+        authority sees an incident.</li>
+      <li>Clear, emergency-appropriate UI with role-specific dashboards materially improves usability.</li>
+    </ul>
+
+    <h3>5.2 Conclusion</h3>
+    <p>The SCERRS system has been successfully designed, implemented, and tested. It fulfils the project objectives:
+      one-tap emergency reporting with auto GPS and photo evidence, automatic agency routing by category, severity
+      classification, role-based dashboards, live status tracking, an interactive map, analytics, notifications, and
+      feedback. The system gives citizens a fast, transparent way to report emergencies and gives agencies the tools to
+      prioritize, dispatch, and manage responses efficiently — addressing the real challenge of slow, fragmented
+      emergency reporting in Nepal.</p>
+
+    <h3>5.3 Future Recommendations</h3>
+    <ol>
+      <li>Develop native Android/iOS apps for offline capability and push notifications.</li>
+      <li>Add Nepali (and other regional) language support.</li>
+      <li>Use WebSockets/SSE for real-time push updates instead of polling.</li>
+      <li>Apply machine learning to auto-classify severity from uploaded photos.</li>
+      <li>Integrate SMS/email gateways and agency dispatch systems.</li>
+      <li>Add predictive analytics for incident hotspots and resource demand.</li>
+      <li>Provide an AI chatbot to help citizens describe incidents conversationally.</li>
+      <li>Strengthen security with audit logs, encryption at rest, and WCAG accessibility.</li>
+    </ol>
+
+    <!-- ===================== REFERENCES ===================== -->
+    <h2 id="ref" class="pagebreak">REFERENCES</h2>
+    <ol class="ref">
+      <li>PHP Group. <em>PHP Manual</em>. Available: https://www.php.net</li>
+      <li>MySQL. <em>MySQL 8.0 Reference Manual</em>. Available: https://dev.mysql.com</li>
+      <li>Bootstrap. <em>Bootstrap 5 Documentation</em>. Available: https://getbootstrap.com</li>
+      <li>Chart.js. <em>Chart.js Documentation</em>. Available: https://www.chartjs.org</li>
+      <li>Leaflet. <em>An open-source JavaScript library for interactive maps</em>. Available: https://leafletjs.com
+      </li>
+      <li>OpenStreetMap. Available: https://www.openstreetmap.org</li>
+      <li>W3Schools. <em>PHP, SQL, HTML, CSS Tutorials</em>. Available: https://www.w3schools.com</li>
+      <li>Mozilla Developer Network (MDN). <em>Web Docs</em>. Available: https://developer.mozilla.org</li>
+    </ol>
+
+    <h2 id="app" class="pagebreak">APPENDICES</h2>
+    <h3>Appendix A: Project Structure</h3>
+    <pre>SCERRS/
+├── assets/            # CSS, JS, images
+├── auth/              # login, register, logout
+├── citizen/           # dashboard, report_new, report_view
+├── authority/         # dashboard (incidents), analytics, incident_view
+├── admin/             # users, categories, teams management
+├── config/            # config.php, db.php
+├── database/scerrs.sql# schema + seed data
+├── includes/          # header, footer, functions
+├── api/               # map_data, analytics_data (JSON)
+└── uploads/incidents/ # photo evidence</pre>
+
+    <h3>Appendix B: Credentials (Development Only)</h3>
+    <table>
+      <tr>
+        <th>Role</th>
+        <th>Email</th>
+        <th>Password</th>
+      </tr>
+      <tr>
+        <td>Admin</td>
+        <td>admin@scerrs.np</td>
+        <td>Admin@123</td>
+      </tr>
+      <tr>
+        <td>Police</td>
+        <td>police@scerrs.np</td>
+        <td>Authority@123</td>
+      </tr>
+      <tr>
+        <td>Fire Brigade</td>
+        <td>fire@scerrs.np</td>
+        <td>Authority@123</td>
+      </tr>
+      <tr>
+        <td>Ambulance</td>
+        <td>ambulance@scerrs.np</td>
+        <td>Authority@123</td>
+      </tr>
+      <tr>
+        <td>Municipality</td>
+        <td>municipality@scerrs.np</td>
+        <td>Authority@123</td>
+      </tr>
+      <tr>
+        <td>Disaster</td>
+        <td>disaster@scerrs.np</td>
+        <td>Authority@123</td>
+      </tr>
+      <tr>
+        <td>Citizen</td>
+        <td>citizen@scerrs.np</td>
+        <td>Citizen@123</td>
+      </tr>
+    </table>
+
+    <h3>Appendix C: Supervisor Visit Log</h3>
+    <table>
+      <tr>
+        <th>#</th>
+        <th>Date</th>
+        <th>Activities / Discussion</th>
+        <th>Remarks / Signature</th>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+    </table>
+
+    <h3>Appendix D: Screen Captures</h3>
+    <div class="figure">Place screenshots here — Login, Citizen Dashboard, Report Form, Incident Detail, Authority Map,
+      Analytics, Admin Management.<div class="cap">Fig. D.1 — Application screens</div>
+    </div>
+
+    <hr>
+    <p class="center small">— End of Report —<br>SCERRS · Smart Citizen Emergency Reporting &amp; Response System · 4th
+      Semester BCA Project</p>
+
+  </div>
+</body>
+
+</html>
