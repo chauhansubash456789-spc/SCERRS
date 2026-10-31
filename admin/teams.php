@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../config/config.php';
 
 $user = require_role('admin');
+$errors = [];
 $departments = db()->query('SELECT * FROM departments ORDER BY name')->fetchAll();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -13,13 +14,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $deptId = (int)($_POST['department_id'] ?? 0);
         $contact = trim((string)($_POST['contact'] ?? ''));
         if ($name !== '' && $deptId) {
-            db()->prepare('INSERT INTO response_teams (name, department_id, contact) VALUES (?, ?, ?)')
-                ->execute([$name, $deptId, $contact !== '' ? $contact : null]);
-            flash('success', 'Team added.');
+            if (preg_match('/[0-9]/', $name)) {
+                $errors[] = 'Team name must not contain numeric values.';
+            } else {
+                db()->prepare('INSERT INTO response_teams (name, department_id, contact) VALUES (?, ?, ?)')
+                    ->execute([$name, $deptId, $contact !== '' ? $contact : null]);
+                flash('success', 'Team added.');
+            }
         } else {
             flash('warning', 'Team name and department are required.');
         }
-        redirect('admin/teams.php');
+        if (!$errors) {
+            redirect('admin/teams.php');
+        }
     }
 
     if ($action === 'toggle') {
@@ -46,6 +53,16 @@ require __DIR__ . '/../includes/header.php';
     <div class="card border-0 shadow-sm">
       <div class="card-header bg-white fw-semibold"><i class="bi bi-plus-circle"></i> Add team</div>
       <div class="card-body">
+        <?php if ($errors): ?>
+          <div class="alert alert-danger">
+            <strong>Please fix the following:</strong>
+            <ul>
+              <?php foreach ($errors as $err): ?>
+                <li><?= e($err) ?></li>
+              <?php endforeach; ?>
+            </ul>
+          </div>
+        <?php endif; ?>
         <form method="post">
           <?= csrf_field() ?>
           <input type="hidden" name="action" value="create">

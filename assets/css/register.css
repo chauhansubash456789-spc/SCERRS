@@ -5,7 +5,10 @@
   padding: 36px;
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
   color: var(--text);
 }
 
@@ -55,8 +58,8 @@
 }
 
 .role-option input:checked + span {
-  background-color: #2563EB;
-  color: #FFFFFF;
+  background-color: #2563eb;
+  color: #ffffff;
   box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
 }
 
@@ -79,8 +82,12 @@
   margin-bottom: 16px;
 }
 
-.grid-2 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
-.grid-3 { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+.grid-2 {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+.grid-3 {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
 
 .form-group {
   display: flex;
@@ -94,7 +101,8 @@
   color: var(--text);
 }
 
-.form-group input, .form-group select {
+.form-group input,
+.form-group select {
   padding: 10px 14px;
   border: 1px solid var(--border);
   background-color: var(--surface);
@@ -105,8 +113,9 @@
   transition: border-color 0.2s;
 }
 
-.form-group input:focus, .form-group select:focus {
-  border-color: #2563EB;
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #2563eb;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
@@ -140,25 +149,30 @@
 
 /* Server-side error banner */
 .server-errors {
-  background: #FEF2F2;
-  border: 1px solid #FECACA;
-  color: #B91C1C;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
   border-radius: 8px;
   padding: 12px 16px;
   margin-bottom: 20px;
   font-size: 0.88rem;
 }
 
-.server-errors ul { margin: 0; padding-left: 18px; }
+.server-errors ul {
+  margin: 0;
+  padding-left: 18px;
+}
 
 /* Button & Checkbox */
-.form-footer { margin-top: 8px; }
+.form-footer {
+  margin-top: 8px;
+}
 
 .btn-submit {
   width: 100%;
   padding: 12px;
-  background-color: #2563EB;
-  color: #FFFFFF;
+  background-color: #2563eb;
+  color: #ffffff;
   font-size: 1rem;
   font-weight: 700;
   border: none;
@@ -168,7 +182,7 @@
 }
 
 .btn-submit:hover {
-  background-color: #1D4ED8;
+  background-color: #1d4ed8;
 }
 
 .login-hint {
@@ -179,13 +193,18 @@
 }
 
 .login-hint a {
-  color: #2563EB;
+  color: #2563eb;
   font-weight: 600;
   text-decoration: none;
 }
 
-.login-hint a:hover { text-decoration: underline; }
+.login-hint a:hover {
+  text-decoration: underline;
+}
 
 @media (max-width: 576px) {
-  .registration-container { padding: 22px; margin: 20px auto; }
+  .registration-container {
+    padding: 22px;
+    margin: 20px auto;
+  }
 }

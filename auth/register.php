@@ -7,8 +7,8 @@ if (is_logged_in()) {
 
 $errors = [];
 
-$provinces    = ['Koshi', 'Madhesh', 'Bagmati', 'Gandaki', 'Lumbini', 'Karnali', 'Sudur Paschim'];
-$countries    = ['Nepal', 'India', 'United States', 'Other'];
+$provinces = ['Koshi', 'Madhesh', 'Bagmati', 'Gandaki', 'Lumbini', 'Karnali', 'Sudur Paschim'];
+$countries = ['Nepal', 'India', 'United States', 'Other'];
 $deptCodeToId = [];
 foreach (db()->query('SELECT id, code FROM departments') as $d) {
     $deptCodeToId[$d['code']] = (int)$d['id'];
@@ -25,55 +25,84 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $post = fn(string $key): string => trim((string)($_POST[$key] ?? ''));
 
-    $role        = ($_POST['userRole'] ?? '') === 'authority' ? 'authority' : 'citizen';
-    $country     = $post('country') ?: 'Nepal';
-    $firstName   = $post('first_name');
-    $middleName  = $post('middle_name');
-    $lastName    = $post('last_name');
-    $email       = strtolower($post('email'));
-    $phone       = $post('phone');
-    $password    = (string)($_POST['password'] ?? '');
-    $confirm     = (string)($_POST['password_confirm'] ?? '');
-    $identityNo  = $post('identity_no');
-    $province    = $post('province');
-    $district    = $post('district');
-    $municipality= $post('municipality');
-    $tole        = $post('tole');
-    $wardNo      = $post('ward_no');
-    $authDept    = $post('auth_department');
-    $officerId   = $post('auth_officer_id');
-    $designation = $post('auth_designation');
+    $role          = ($_POST['userRole'] ?? '') === 'authority' ? 'authority' : 'citizen';
+    $country       = $post('country') ?: 'Nepal';
+    $firstName     = $post('first_name');
+    $middleName    = $post('middle_name');
+    $lastName      = $post('last_name');
+    $email         = strtolower($post('email'));
+    $phone         = $post('phone');
+    $password      = (string)($_POST['password'] ?? '');
+    $confirm       = (string)($_POST['password_confirm'] ?? '');
+    $identityNo    = $post('identity_no');
+    $province      = $post('province');
+    $district      = $post('district');
+    $municipality  = $post('municipality');
+    $tole          = $post('tole');
+    $wardNo        = $post('ward_no');
+    $authDept      = $post('auth_department');
+    $officerId     = $post('auth_officer_id');
+    $designation   = $post('auth_designation');
     $officialEmail = strtolower($post('auth_official_email'));
-    $deptAddress = $post('auth_address');
+    $deptAddress   = $post('auth_address');
 
     /* ---- Personal details ---- */
-    if ($firstName === '')                       $errors[] = 'First name is required.';
-    if ($lastName === '')                        $errors[] = 'Last name is required.';
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = 'Please enter a valid email address.';
+    if ($firstName === '') {
+        $errors[] = 'First name is required.';
+    } elseif (preg_match('/[0-9]/', $firstName)) {
+        $errors[] = 'First name must not contain numeric values.';
+    }
 
-    if ($phone !== '' && $country === 'Nepal'
-        && !preg_match('/^(\+977)?(98|97|96)\d{8}$/', preg_replace('/\s+/', '', $phone))) {
+    if ($middleName !== '' && preg_match('/[0-9]/', $middleName)) {
+        $errors[] = 'Middle name must not contain numeric values.';
+    }
+
+    if ($lastName === '') {
+        $errors[] = 'Last name is required.';
+    } elseif (preg_match('/[0-9]/', $lastName)) {
+        $errors[] = 'Last name must not contain numeric values.';
+    }
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = 'Please enter a valid email address.';
+    }
+
+    if ($phone !== '' && $country === 'Nepal' && !preg_match('/^(\+977)?(98|97|96)\d{8}$/', preg_replace('/\s+/', '', $phone))) {
         $errors[] = 'Enter a valid 10-digit mobile number starting with 98/97/96.';
     }
 
-    if (strlen($password) < 8)                   $errors[] = 'Password must be at least 8 characters long.';
-    if ($password !== $confirm)                  $errors[] = 'Passwords do not match.';
+    if (strlen($password) < 8) {
+        $errors[] = 'Password must be at least 8 characters long.';
+    }
+    if ($password !== $confirm) {
+        $errors[] = 'Passwords do not match.';
+    }
 
     /* ---- Identity & citizenship ---- */
-    if (!in_array($country, $countries, true))   $errors[] = 'Invalid country selected.';
+    if (!in_array($country, $countries, true)) {
+        $errors[] = 'Invalid country selected.';
+    }
     if ($identityNo === '') {
         $errors[] = ($country === 'Nepal' ? 'Citizenship No.' : 'Passport No.') . ' is required.';
     } elseif ($country === 'Nepal' && !preg_match('#^[0-9/-]{5,20}$#', $identityNo)) {
         $errors[] = 'Enter a valid Citizenship Number.';
-    } elseif ($country !== 'Nepal' && !preg_match('/^[A-Z0-9]{6,12}$/i', $identityNo)) {
-        $errors[] = 'Enter a valid Passport Number.';
+    } elseif ($country !== 'Nepal' && !preg_match('/^(?:[A-Z]{1,2}[0-9]{7}|[0-9]{8,9})$/i', $identityNo)) {
+        $errors[] = 'Enter a valid Passport Number (e.g. A1234567 or 123456789).';
     }
 
     /* ---- Residential address ---- */
-    if (!in_array($province, $provinces, true))  $errors[] = 'Please select a valid province.';
-    if ($district === '')                        $errors[] = 'District is required.';
-    if ($municipality === '')                    $errors[] = 'Municipality / Rural Municipality is required.';
-    if ($tole === '')                            $errors[] = 'Tole name is required.';
+    if (!in_array($province, $provinces, true)) {
+        $errors[] = 'Please select a valid province.';
+    }
+    if ($district === '') {
+        $errors[] = 'District is required.';
+    }
+    if ($municipality === '') {
+        $errors[] = 'Municipality / Rural Municipality is required.';
+    }
+    if ($tole === '') {
+        $errors[] = 'Tole name is required.';
+    }
     if (!ctype_digit($wardNo) || (int)$wardNo < 1 || (int)$wardNo > 35) {
         $errors[] = 'Ward No. must be between 1 and 35.';
     }
@@ -81,19 +110,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     /* ---- Authority-only fields ---- */
     $departmentId = null;
     if ($role === 'authority') {
-        if (!isset($deptCodeToId[$authDept]))    $errors[] = 'Please select your department / agency.';
-        else                                     $departmentId = $deptCodeToId[$authDept];
-        if ($officerId === '')                   $errors[] = 'Department / Officer ID is required.';
-        if ($designation === '')                 $errors[] = 'Official designation / rank is required.';
-        if (!filter_var($officialEmail, FILTER_VALIDATE_EMAIL)) $errors[] = 'A valid official department email is required.';
-        if ($deptAddress === '')                 $errors[] = 'Department address is required.';
+        if (!isset($deptCodeToId[$authDept])) {
+            $errors[] = 'Please select your department / agency.';
+        } else {
+            $departmentId = $deptCodeToId[$authDept];
+        }
+        if ($officerId === '') {
+            $errors[] = 'Department / Officer ID is required.';
+        }
+        if ($designation === '') {
+            $errors[] = 'Official designation / rank is required.';
+        }
+        if (!filter_var($officialEmail, FILTER_VALIDATE_EMAIL)) {
+            $errors[] = 'A valid official department email is required.';
+        }
+        if ($deptAddress === '') {
+            $errors[] = 'Department address is required.';
+        }
     }
 
     /* ---- Duplicate email ---- */
     if (!$errors) {
         $dup = db()->prepare('SELECT id FROM users WHERE email = ?');
         $dup->execute([$email]);
-        if ($dup->fetch()) $errors[] = 'An account with this email already exists.';
+        if ($dup->fetch()) {
+            $errors[] = 'An account with this email already exists.';
+        }
     }
 
     /* ---- Persist ---- */
@@ -109,16 +151,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                  password, role, department_id, active)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
         )->execute([
-            $fullName, $firstName ?: null, $middleName ?: null, $lastName ?: null,
-            $email, $phone !== '' ? $phone : null,
-            $country, $country === 'Nepal' ? 'citizenship' : 'passport', $identityNo,
-            $province, $district, $municipality, $tole, (int)$wardNo,
+            $fullName,
+            $firstName ?: null,
+            $middleName ?: null,
+            $lastName ?: null,
+            $email,
+            $phone !== '' ? $phone : null,
+            $country,
+            $country === 'Nepal' ? 'citizenship' : 'passport',
+            $identityNo,
+            $province,
+            $district,
+            $municipality,
+            $tole,
+            (int)$wardNo,
             $role === 'authority' ? $officerId : null,
             $role === 'authority' ? $designation : null,
             $role === 'authority' ? $officialEmail : null,
             $role === 'authority' ? $deptAddress : null,
             password_hash($password, PASSWORD_DEFAULT),
-            $role, $departmentId,
+            $role,
+            $departmentId,
             $role === 'citizen' ? 1 : 0, // authority accounts await admin approval
         ]);
 
@@ -148,7 +201,8 @@ $selRole = (($_POST['userRole'] ?? '') === 'authority') ? 'authority' : 'citizen
     <div class="server-errors">
       <strong>Please fix the following:</strong>
       <ul>
-        <?php foreach ($errors as $err): ?><li><?= e($err) ?></li><?php endforeach; ?>
+        <?php foreach ($errors as $err): ?>
+          <li><?= e($err) ?></li><?php endforeach; ?>
       </ul>
     </div>
   <?php endif; ?>
@@ -159,11 +213,13 @@ $selRole = (($_POST['userRole'] ?? '') === 'authority') ? 'authority' : 'citizen
     <!-- User Role Selector -->
     <div class="role-selection">
       <label class="role-option">
-        <input type="radio" name="userRole" value="citizen" <?= $selRole === 'citizen' ? 'checked' : '' ?> onchange="toggleRoleFields()">
+        <input type="radio" name="userRole" value="citizen" <?= $selRole === 'citizen' ? 'checked' : '' ?>
+          onchange="toggleRoleFields()">
         <span>Citizen User</span>
       </label>
       <label class="role-option">
-        <input type="radio" name="userRole" value="authority" <?= $selRole === 'authority' ? 'checked' : '' ?> onchange="toggleRoleFields()">
+        <input type="radio" name="userRole" value="authority" <?= $selRole === 'authority' ? 'checked' : '' ?>
+          onchange="toggleRoleFields()">
         <span>Authority / Responder</span>
       </label>
     </div>
@@ -174,15 +230,15 @@ $selRole = (($_POST['userRole'] ?? '') === 'authority') ? 'authority' : 'citizen
       <div class="form-grid grid-3">
         <div class="form-group">
           <label>First Name *</label>
-          <input type="text" name="first_name" placeholder="First Name" value="<?= old('first_name') ?>" required>
+          <input type="text" name="first_name" placeholder="First Name" value="<?= old('first_name') ?>" pattern="^[^0-9]+$" title="First name must not contain numeric values" required>
         </div>
         <div class="form-group">
           <label>Middle Name</label>
-          <input type="text" name="middle_name" placeholder="Middle Name" value="<?= old('middle_name') ?>">
+          <input type="text" name="middle_name" placeholder="Middle Name" value="<?= old('middle_name') ?>" pattern="^[^0-9]*$" title="Middle name must not contain numeric values">
         </div>
         <div class="form-group">
           <label>Last Name *</label>
-          <input type="text" name="last_name" placeholder="Last Name" value="<?= old('last_name') ?>" required>
+          <input type="text" name="last_name" placeholder="Last Name" value="<?= old('last_name') ?>" pattern="^[^0-9]+$" title="Last name must not contain numeric values" required>
         </div>
       </div>
 
@@ -224,7 +280,8 @@ $selRole = (($_POST['userRole'] ?? '') === 'authority') ? 'authority' : 'citizen
 
         <div class="form-group" id="identityDocGroup">
           <label id="identityDocLabel">Citizenship No. *</label>
-          <input type="text" id="identityDocInput" name="identity_no" placeholder="e.g. 12-01-78-12345" value="<?= old('identity_no') ?>" required>
+          <input type="text" id="identityDocInput" name="identity_no" placeholder="e.g. 12-01-78-12345"
+            value="<?= old('identity_no') ?>" required>
         </div>
       </div>
     </div>
@@ -260,7 +317,8 @@ $selRole = (($_POST['userRole'] ?? '') === 'authority') ? 'authority' : 'citizen
         </div>
         <div class="form-group">
           <label>Ward No. *</label>
-          <input type="number" name="ward_no" min="1" max="35" placeholder="e.g. 10" value="<?= old('ward_no') ?>" required>
+          <input type="number" name="ward_no" min="1" max="35" placeholder="e.g. 10" value="<?= old('ward_no') ?>"
+            required>
         </div>
       </div>
     </div>
@@ -273,33 +331,40 @@ $selRole = (($_POST['userRole'] ?? '') === 'authority') ? 'authority' : 'citizen
           <label>Department / Agency *</label>
           <select id="authDeptInput" name="auth_department">
             <option value="">Select Agency</option>
-            <option value="police"     <?= old('auth_department') === 'police' ? 'selected' : '' ?>>Nepal Police</option>
-            <option value="fire"       <?= old('auth_department') === 'fire' ? 'selected' : '' ?>>Fire Brigade</option>
-            <option value="ambulance"  <?= old('auth_department') === 'ambulance' ? 'selected' : '' ?>>Ambulance Services</option>
-            <option value="municipality" <?= old('auth_department') === 'municipality' ? 'selected' : '' ?>>Municipality Emergency Unit</option>
-            <option value="disaster"   <?= old('auth_department') === 'disaster' ? 'selected' : '' ?>>Disaster Management (NEOC)</option>
+            <option value="police" <?= old('auth_department') === 'police' ? 'selected' : '' ?>>Nepal Police</option>
+            <option value="fire" <?= old('auth_department') === 'fire' ? 'selected' : '' ?>>Fire Brigade</option>
+            <option value="ambulance" <?= old('auth_department') === 'ambulance' ? 'selected' : '' ?>>Ambulance Services
+            </option>
+            <option value="municipality" <?= old('auth_department') === 'municipality' ? 'selected' : '' ?>>Municipality
+              Emergency Unit</option>
+            <option value="disaster" <?= old('auth_department') === 'disaster' ? 'selected' : '' ?>>Disaster Management
+              (NEOC)</option>
           </select>
         </div>
         <div class="form-group">
           <label>Department / Officer ID *</label>
-          <input type="text" id="authDeptIdInput" name="auth_officer_id" placeholder="Official Badge/ID Number" value="<?= old('auth_officer_id') ?>">
+          <input type="text" id="authDeptIdInput" name="auth_officer_id" placeholder="Official Badge/ID Number"
+            value="<?= old('auth_officer_id') ?>">
         </div>
       </div>
 
       <div class="form-grid grid-2">
         <div class="form-group">
           <label>Official Designations / Rank *</label>
-          <input type="text" name="auth_designation" placeholder="e.g. Inspector, Control Officer" value="<?= old('auth_designation') ?>">
+          <input type="text" name="auth_designation" placeholder="e.g. Inspector, Control Officer"
+            value="<?= old('auth_designation') ?>">
         </div>
         <div class="form-group">
           <label>Official Department Email *</label>
-          <input type="email" name="auth_official_email" placeholder="official@police.gov.np" value="<?= old('auth_official_email') ?>">
+          <input type="email" name="auth_official_email" placeholder="official@police.gov.np"
+            value="<?= old('auth_official_email') ?>">
         </div>
       </div>
 
       <div class="form-group">
         <label>Department Address *</label>
-        <input type="text" name="auth_address" placeholder="Station/Headquarters Street Address, City" value="<?= old('auth_address') ?>">
+        <input type="text" name="auth_address" placeholder="Station/Headquarters Street Address, City"
+          value="<?= old('auth_address') ?>">
       </div>
     </div>
 

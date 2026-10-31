@@ -1,7 +1,6 @@
 <?php
 // update_incident.php - API endpoint for updating citizen reports
-require_once __DIR__ . '/../../config/config.php';
-require_once __DIR__ . '/../../config/db.php';
+require_once __DIR__ . '/../config/config.php';
 
 header('Content-Type: application/json');
 
@@ -140,9 +139,9 @@ try {
     // 8. Handle new photo uploads (optional)
     $newMediaCount = 0;
     if (isset($_FILES['new_photos']) && is_array($_FILES['new_photos']['name']) && count($_FILES['new_photos']['name']) > 0) {
-        $uploadDir = __DIR__ . '/../../uploads/incidents/';
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
+        $uploadDir = UPLOAD_DIR . DIRECTORY_SEPARATOR;
+        if (!is_dir(UPLOAD_DIR)) {
+            mkdir(UPLOAD_DIR, 0755, true);
         }
 
         $maxTotalPhotos = 4;

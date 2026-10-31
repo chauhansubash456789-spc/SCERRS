@@ -20,16 +20,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $severity    = (string)($_POST['severity'] ?? 'medium');
 
     // Validation
-    if (!$category_id || !in_array($category_id, array_column($categories, 'id'))) $errors[] = 'Please choose an incident type.';
-    if ($title === '' || mb_strlen($title) > 150)                                  $errors[] = 'A short title (max 150 chars) is required.';
-    if ($description === '')                                                       $errors[] = 'Please describe what is happening.';
-    if (!is_numeric($latitude) || !is_numeric($longitude))                         $errors[] = 'GPS location is required. Allow location access or tap the map.';
-    if (!in_array($severity, ['low', 'medium', 'high', 'critical'], true))         $errors[] = 'Invalid severity selected.';
+    if (!$category_id || !in_array($category_id, array_column($categories, 'id'))) {
+        $errors[] = 'Please choose an incident type.';
+    }
+    if ($title === '' || mb_strlen($title) > 150) {
+        $errors[] = 'A short title (max 150 chars) is required.';
+    }
+    if ($description === '') {
+        $errors[] = 'Please describe what is happening.';
+    }
+    if (!is_numeric($latitude) || !is_numeric($longitude)) {
+        $errors[] = 'GPS location is required. Allow location access or tap the map.';
+    }
+    if (!in_array($severity, ['low', 'medium', 'high', 'critical'], true)) {
+        $errors[] = 'Invalid severity selected.';
+    }
 
     // Photo uploads
-    $files    = $_FILES['photos'] ?? null;
-    $saved    = [];
-    $allowed  = ['jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png', 'webp' => 'image/webp'];
+    $files   = $_FILES['photos'] ?? null;
+    $saved   = [];
+    $allowed = ['jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png', 'webp' => 'image/webp'];
 
     if ($files && !empty($files['name'][0])) {
         $count = count($files['name']);
@@ -37,9 +47,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors[] = 'You can attach up to 4 photos.';
         }
         for ($k = 0; $k < min($count, 4); $k++) {
-            if ($files['error'][$k] === UPLOAD_ERR_NO_FILE) continue;
-            if ($files['error'][$k] !== UPLOAD_ERR_OK) { $errors[] = 'Photo #' . ($k + 1) . ' failed to upload.'; continue; }
-            if ($files['size'][$k] > UPLOAD_MAX_BYTES) { $errors[] = 'Photo #' . ($k + 1) . ' exceeds 5 MB.'; continue; }
+            if ($files['error'][$k] === UPLOAD_ERR_NO_FILE) {
+                continue;
+            }
+            if ($files['error'][$k] !== UPLOAD_ERR_OK) {
+                $errors[] = 'Photo #' . ($k + 1) . ' failed to upload.';
+                continue;
+            }
+            if ($files['size'][$k] > UPLOAD_MAX_BYTES) {
+                $errors[] = 'Photo #' . ($k + 1) . ' exceeds 5 MB.';
+                continue;
+            }
             $ext = strtolower(pathinfo($files['name'][$k], PATHINFO_EXTENSION));
             if (!isset($allowed[$ext]) || mime_content_type($files['tmp_name'][$k]) !== $allowed[$ext]) {
                 $errors[] = 'Photo #' . ($k + 1) . ' must be a JPG, PNG or WEBP image.';
@@ -123,10 +141,11 @@ require __DIR__ . '/../includes/header.php';
                 <div class="col-6 col-md-4">
                   <input class="btn-check" type="radio" name="category_id" value="<?= (int)$c['id'] ?>" id="cat<?= (int)$c['id'] ?>"
                     <?= isset($_POST['category_id']) && (int)$_POST['category_id'] === (int)$c['id'] ? 'checked' : '' ?> required>
-                  <label class="btn btn-outline-danger w-100 h-100 py-2" for="cat<?= (int)$c['id'] ?>">
-                    <div style="font-size:1.4rem"><?= e($c['icon']) ?></div>
-                    <small><?= e($c['name']) ?></small>
-                    <div class="text-muted" style="font-size:.7rem">→ <?= e($c['department_name']) ?></div>
+                  <label class="incident-tile" for="cat<?= (int)$c['id'] ?>">
+                    <span class="tile-check"><i class="bi bi-check-lg"></i></span>
+                    <span class="tile-icon"><?= e($c['icon']) ?></span>
+                    <span class="tile-name"><?= e($c['name']) ?></span>
+                    <span class="tile-agency"><?= e($c['department_name']) ?></span>
                   </label>
                 </div>
               <?php endforeach; ?>

@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../config/config.php';
 
 $user = require_role('admin');
+$errors = [];
 $departments = db()->query('SELECT * FROM departments ORDER BY name')->fetchAll();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -13,17 +14,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $icon  = trim((string)($_POST['icon'] ?? '')) ?: '⚠️';
         $deptId = (int)($_POST['department_id'] ?? 0);
         if ($name !== '' && $deptId) {
-            try {
-                db()->prepare('INSERT INTO categories (name, department_id, icon) VALUES (?, ?, ?)')
-                    ->execute([$name, $deptId, $icon]);
-                flash('success', 'Category added.');
-            } catch (PDOException) {
-                flash('danger', 'A category with that name already exists.');
+            if (preg_match('/[0-9]/', $name)) {
+                $errors[] = 'Category name must not contain numeric values.';
+            } else {
+                try {
+                    db()->prepare('INSERT INTO categories (name, department_id, icon) VALUES (?, ?, ?)')
+                        ->execute([$name, $deptId, $icon]);
+                    flash('success', 'Category added.');
+                } catch (PDOException) {
+                    flash('danger', 'A category with that name already exists.');
+                }
             }
         } else {
             flash('warning', 'Name and department are required.');
         }
-        redirect('admin/categories.php');
+        if (!$errors) {
+            redirect('admin/categories.php');
+        }
     }
 
     if ($action === 'toggle') {
@@ -62,6 +69,16 @@ require __DIR__ . '/../includes/header.php';
     <div class="card border-0 shadow-sm">
       <div class="card-header bg-white fw-semibold"><i class="bi bi-plus-circle"></i> Add category</div>
       <div class="card-body">
+        <?php if ($errors): ?>
+          <div class="alert alert-danger">
+            <strong>Please fix the following:</strong>
+            <ul>
+              <?php foreach ($errors as $err): ?>
+                <li><?= e($err) ?></li>
+              <?php endforeach; ?>
+            </ul>
+          </div>
+        <?php endif; ?>
         <form method="post">
           <?= csrf_field() ?>
           <input type="hidden" name="action" value="create">

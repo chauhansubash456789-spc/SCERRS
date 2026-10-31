@@ -52,7 +52,12 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <?php endif; ?>
 <?php if ($load_charts): ?>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script src="<?= asset('assets/js/chart.umd.min.js') ?>"></script>
+<script>
+if (typeof Chart === 'undefined') {
+  document.write('<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"><\/script>');
+}
+</script>
 <?php endif; ?>
 <?= $extra_scripts ?? '' ?>
 </body>

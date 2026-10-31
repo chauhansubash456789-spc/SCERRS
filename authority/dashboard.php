@@ -36,10 +36,10 @@ $whereSql = $where ? ('WHERE ' . implode(' AND ', $where)) : '';
 
 /* ---- KPI cards ---- */
 $kpiSql = "SELECT COUNT(*) AS total,
-       SUM(i.status = 'pending')      AS pending,
-       SUM(i.status IN ('acknowledged','in_progress')) AS active,
-       SUM(i.status = 'resolved')     AS resolved,
-       SUM(i.severity IN ('high','critical'))          AS urgent
+            SUM(i.status = 'pending') AS pending,
+            SUM(i.status IN ('acknowledged','in_progress')) AS active,
+            SUM(i.status = 'resolved') AS resolved,
+            SUM(i.severity IN ('high','critical')) AS urgent
      FROM incidents i JOIN categories c ON c.id = i.category_id $whereSql";
 $stmtKpi = db()->prepare($kpiSql);
 $stmtKpi->execute($params);

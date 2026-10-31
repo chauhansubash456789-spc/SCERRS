@@ -47,20 +47,23 @@ if ($user) {
     </button>
     <div class="collapse navbar-collapse" id="mainNav">
       <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link <?= (basename($_SERVER['SCRIPT_NAME'] ?? '') === 'index.php') ? 'active' : '' ?>" href="<?= url('index.php') ?>">Home</a>
+        </li>
         <?php if (!$user): ?>
-          <li class="nav-item"><a class="nav-link" href="<?= url('index.php') ?>">Home</a></li>
+          <!-- Guest navigation -->
         <?php elseif ($user['role'] === 'citizen'): ?>
-          <li class="nav-item"><a class="nav-link" href="<?= url('citizen/dashboard.php') ?>">My Reports</a></li>
+          <li class="nav-item"><a class="nav-link <?= (basename($_SERVER['SCRIPT_NAME'] ?? '') === 'dashboard.php') ? 'active' : '' ?>" href="<?= url('citizen/dashboard.php') ?>">My Reports</a></li>
           <li class="nav-item"><a class="btn btn-light btn-sm text-danger fw-semibold ms-lg-2 mt-1" href="<?= url('citizen/report_new.php') ?>"><i class="bi bi-exclamation-triangle"></i> Report Emergency</a></li>
         <?php elseif ($user['role'] === 'authority'): ?>
-          <li class="nav-item"><a class="nav-link" href="<?= url('authority/dashboard.php') ?>">Incidents</a></li>
-          <li class="nav-item"><a class="nav-link" href="<?= url('authority/analytics.php') ?>">Analytics</a></li>
+          <li class="nav-item"><a class="nav-link <?= (basename($_SERVER['SCRIPT_NAME'] ?? '') === 'dashboard.php') ? 'active' : '' ?>" href="<?= url('authority/dashboard.php') ?>">Incidents</a></li>
+          <li class="nav-item"><a class="nav-link <?= (basename($_SERVER['SCRIPT_NAME'] ?? '') === 'analytics.php') ? 'active' : '' ?>" href="<?= url('authority/analytics.php') ?>">Analytics</a></li>
         <?php else: ?>
-          <li class="nav-item"><a class="nav-link" href="<?= url('authority/dashboard.php') ?>">All Incidents</a></li>
-          <li class="nav-item"><a class="nav-link" href="<?= url('authority/analytics.php') ?>">Analytics</a></li>
-          <li class="nav-item"><a class="nav-link" href="<?= url('admin/users.php') ?>">Users</a></li>
-          <li class="nav-item"><a class="nav-link" href="<?= url('admin/categories.php') ?>">Categories</a></li>
-          <li class="nav-item"><a class="nav-link" href="<?= url('admin/teams.php') ?>">Teams</a></li>
+          <li class="nav-item"><a class="nav-link <?= (basename($_SERVER['SCRIPT_NAME'] ?? '') === 'dashboard.php') ? 'active' : '' ?>" href="<?= url('authority/dashboard.php') ?>">All Incidents</a></li>
+          <li class="nav-item"><a class="nav-link <?= (basename($_SERVER['SCRIPT_NAME'] ?? '') === 'analytics.php') ? 'active' : '' ?>" href="<?= url('authority/analytics.php') ?>">Analytics</a></li>
+          <li class="nav-item"><a class="nav-link <?= (basename($_SERVER['SCRIPT_NAME'] ?? '') === 'users.php') ? 'active' : '' ?>" href="<?= url('admin/users.php') ?>">Users</a></li>
+          <li class="nav-item"><a class="nav-link <?= (basename($_SERVER['SCRIPT_NAME'] ?? '') === 'categories.php') ? 'active' : '' ?>" href="<?= url('admin/categories.php') ?>">Categories</a></li>
+          <li class="nav-item"><a class="nav-link <?= (basename($_SERVER['SCRIPT_NAME'] ?? '') === 'teams.php') ? 'active' : '' ?>" href="<?= url('admin/teams.php') ?>">Teams</a></li>
         <?php endif; ?>
       </ul>
       <ul class="navbar-nav ms-auto align-items-lg-center">
@@ -87,8 +90,10 @@ if ($user) {
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
               <li><h6 class="dropdown-header"><?= e(ucfirst($user['role'])) ?> account</h6></li>
+              <li><a class="dropdown-item" href="<?= url('index.php') ?>"><i class="bi bi-house-door me-2"></i> Home</a></li>
+              <li><a class="dropdown-item" href="<?= url(role_home($user)) ?>"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a></li>
               <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item text-danger" href="<?= url('auth/logout.php') ?>"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+              <li><a class="dropdown-item text-danger" href="<?= url('auth/logout.php') ?>"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
             </ul>
           </li>
         <?php else: ?>

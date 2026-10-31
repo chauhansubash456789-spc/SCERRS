@@ -41,24 +41,28 @@ require __DIR__ . '/includes/header.php';
     </div>
 
     <?php if (!$notifications): ?>
-      <div class="card border-0 shadow-sm"><div class="card-body text-center text-muted py-5">
-        <i class="bi bi-inbox fs-1 d-block mb-2"></i> No notifications yet.
-      </div></div>
+      <div class="card border-0 shadow-sm">
+        <div class="card-body text-center text-muted py-5">
+          <i class="bi bi-inbox fs-1 d-block mb-2"></i> No notifications yet.
+        </div>
+      </div>
     <?php else: ?>
       <div class="card border-0 shadow-sm">
         <div class="list-group list-group-flush">
           <?php foreach ($notifications as $n): ?>
-            <a href="<?= $n['incident_id']
-                        ? url(($user['role'] === 'citizen' ? 'citizen/report_view.php?id=' : 'authority/incident_view.php?id=') . (int)$n['incident_id'] . ($n['is_read'] ? '' : '&from=n'))
-                        : 'javascript:void(0)' ?>"
-               class="list-group-item list-group-item-action d-flex gap-3 py-3 <?= !$n['is_read'] ? 'bg-danger-subtle' : '' ?>">
+            <?php
+            $targetUrl = $n['incident_id']
+                ? url(($user['role'] === 'citizen' ? 'citizen/report_view.php?id=' : 'authority/incident_view.php?id=') . (int)$n['incident_id'] . ($n['is_read'] ? '' : '&from=n'))
+                : 'javascript:void(0)';
+            ?>
+            <a href="<?= $targetUrl ?>" class="list-group-item list-group-item-action d-flex gap-3 py-3 <?= !$n['is_read'] ? 'bg-danger-subtle' : '' ?>">
               <i class="bi <?= !$n['is_read'] ? 'bi-envelope-fill text-danger' : 'bi-envelope-open' ?> fs-5"></i>
               <div class="flex-grow-1">
                 <div><?= e($n['message']) ?></div>
                 <small class="text-muted"><?= e(time_ago($n['created_at'])) ?></small>
               </div>
               <?php if (!$n['is_read']): ?>
-                <span class="align-self-center small text-danger">new</span>
+                <span class="align-self-center small text-danger fw-semibold">new</span>
               <?php endif; ?>
             </a>
           <?php endforeach; ?>

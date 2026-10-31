@@ -2,11 +2,16 @@
 .DS_Store
 Thumbs.db
 desktop.ini
+~$*
 
 # IDE
 .vscode/
 .idea/
 *.swp
+
+# Standalone / unrelated directories
+rea/
+New folder/
 
 # Uploaded user files (photos, evidence)
 uploads/incidents/*

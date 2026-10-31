@@ -53,78 +53,82 @@ $categories = db()->query('SELECT * FROM categories ORDER BY name')->fetchAll();
       <div class="card-header bg-white fw-semibold">
         <h5 class="mb-0"><i class="bi bi-pencil-square me-2"></i> Edit Report</h5>
       </div>
-      <div class="card-body">
-        <p class="text-muted small mb-3">Only reports with <strong>Pending</strong> status can be edited. Reports that are <strong>Resolved</strong>, <strong>Rejected</strong>, or <strong>Under Active Dispatch</strong> are locked.</p>
+      <form id="editReportForm" method="POST" action="<?= url('api/update_incident.php') ?>">
+        <?= csrf_field() ?>
+        <input type="hidden" name="_method" value="PUT">
+        <input type="hidden" name="incident_id" value="<?= (int)$incident['id'] ?>">
+        <input type="hidden" name="user_id" value="<?= (int)$user['id'] ?>">
 
-        <!-- Hidden incident ID -->
-        <input type="hidden" name="incident_id" value="<?= $incident['id'] ?>">
+        <div class="card-body">
+          <p class="text-muted small mb-3">Only reports with <strong>Pending</strong> status can be edited. Reports that are <strong>Resolved</strong>, <strong>Rejected</strong>, or <strong>Under Active Dispatch</strong> are locked.</p>
 
-        <div class="row g-3">
-          <!-- Title Field -->
-          <div class="col-12">
-            <label class="form-label fw-semibold">Title <span class="text-danger small">*</span></label>
-            <input type="text" class="form-control" name="title" value="<?= e($incident['title']) ?>" required>
-            <small class="text-muted">Maximum 150 characters</small>
-          </div>
-
-          <!-- Description Field -->
-          <div class="col-12">
-            <label class="form-label fw-semibold">Description <span class="text-danger small">*</span></label>
-            <textarea class="form-control" name="description" rows="3" required><?= nl2br(e($incident['description'])) ?></textarea>
-            <small class="text-muted">Describe the emergency in detail</small>
-          </div>
-
-          <!-- Severity Field -->
-          <div class="col-12">
-            <label class="form-label fw-semibold">Severity</label>
-            <div class="radio-group">
-              <?php foreach(['low', 'medium', 'high', 'critical'] as $sev): ?>
-                <label class="form-check-label">
-                  <input type="radio" name="severity" class="form-check-input" value="<?= $sev ?>" <?= $incident['severity'] === $sev ? 'checked' : '' ?>>
-                  <?= severity_badge($sev) ?> <?= ucfirst($sev) ?>
-                </label>
-              <?php endforeach; ?>
+          <div class="row g-3">
+            <!-- Title Field -->
+            <div class="col-12">
+              <label class="form-label fw-semibold">Title <span class="text-danger small">*</span></label>
+              <input type="text" class="form-control" name="title" value="<?= e($incident['title']) ?>" maxlength="150" required>
+              <small class="text-muted">Maximum 150 characters</small>
             </div>
-            <small class="text-muted">Select severity level of the incident</small>
-          </div>
 
-          <!-- Address Field (locked - auto-detected) -->
-          <div class="col-12">
-            <label class="form-label fw-semibold">Address <span class="text-muted">(Locked)</span></label>
-            <input type="text" class="form-control" value="<?= e($incident['address'] ?? '') ?>" readonly>
-            <small class="text-muted text-muted">Auto-detected GPS location. Not editable.</small>
-          </div>
-
-          <!-- GPS Coordinates (locked) -->
-          <div class="col-12">
-            <label class="form-label fw-semibold">GPS Coordinates <span class="text-muted">(Locked)</span></label>
-            <div class="alert alert-light">
-              <i class="bi bi-shield-lock me-2"></i>
-              Latitude: <?= e($incident['latitude']) ?>, Longitude: <?= e($incident['longitude']) ?>
+            <!-- Description Field -->
+            <div class="col-12">
+              <label class="form-label fw-semibold">Description <span class="text-danger small">*</span></label>
+              <textarea class="form-control" name="description" rows="4" required><?= e($incident['description']) ?></textarea>
+              <small class="text-muted">Describe the emergency in detail</small>
             </div>
-            <small class="text-muted text-muted">Auto-detected at time of report. Not editable.</small>
+
+            <!-- Severity Field -->
+            <div class="col-12">
+              <label class="form-label fw-semibold">Severity</label>
+              <div class="d-flex flex-wrap gap-3">
+                <?php foreach (['low', 'medium', 'high', 'critical'] as $sev): ?>
+                  <label class="form-check-label d-flex align-items-center gap-1">
+                    <input type="radio" name="severity" class="form-check-input mt-0" value="<?= $sev ?>" <?= $incident['severity'] === $sev ? 'checked' : '' ?>>
+                    <?= severity_badge($sev) ?> <?= ucfirst($sev) ?>
+                  </label>
+                <?php endforeach; ?>
+              </div>
+              <small class="text-muted">Select severity level of the incident</small>
+            </div>
+
+            <!-- Address Field (locked - auto-detected) -->
+            <div class="col-12">
+              <label class="form-label fw-semibold">Address <span class="text-muted">(Locked)</span></label>
+              <input type="text" class="form-control bg-light" value="<?= e($incident['address'] ?? '') ?>" readonly>
+              <small class="text-muted">Auto-detected GPS location. Not editable.</small>
+            </div>
+
+            <!-- GPS Coordinates (locked) -->
+            <div class="col-12">
+              <label class="form-label fw-semibold">GPS Coordinates <span class="text-muted">(Locked)</span></label>
+              <div class="alert alert-light border py-2 mb-1">
+                <i class="bi bi-shield-lock me-2"></i>
+                Latitude: <?= e($incident['latitude']) ?>, Longitude: <?= e($incident['longitude']) ?>
+              </div>
+              <small class="text-muted">Auto-detected at time of report. Not editable.</small>
+            </div>
+
+            <!-- Reference Number (locked) -->
+            <div class="col-12">
+              <label class="form-label fw-semibold">Reference Number <span class="text-muted">(Locked)</span></label>
+              <input type="text" class="form-control bg-light" value="<?= e($incident['ref_no']) ?>" readonly>
+              <small class="text-muted">Unique report reference. Not editable.</small>
+            </div>
           </div>
 
-          <!-- Reference Number (locked) -->
-          <div class="col-12">
-            <label class="form-label fw-semibold">Reference Number <span class="text-muted">(Locked)</span></label>
-            <input type="text" class="form-control" value="<?= e($incident['ref_no']) ?>" readonly>
-            <small class="text-muted text-muted">Unique report reference. Not editable.</small>
+          <hr class="my-4">
+
+          <!-- Form Actions -->
+          <div class="d-flex gap-2">
+            <a href="<?= url('citizen/report_view.php?id=' . $incident['id']) ?>" class="btn btn-secondary">
+              <i class="bi bi-x me-1"></i> Cancel
+            </a>
+            <button type="submit" class="btn btn-danger">
+              <i class="bi bi-save me-1"></i> Save Changes
+            </button>
           </div>
         </div>
-
-        <hr>
-
-        <!-- Form Actions -->
-        <div class="d-flex gap-2">
-          <button type="button" class="btn btn-secondary" onclick="window.location.href='<?= url('citizen/report_view.php?id=' . $incident['id']) ?>'">
-            <i class="bi bi-x me-2"></i> Cancel
-          </button>
-          <button type="submit" form="editReportForm" class="btn btn-danger">
-            <i class="bi bi-save me-2"></i> Save Changes
-          </button>
-        </div>
-      </div>
+      </form>
     </div>
   </div>
 
@@ -144,69 +148,57 @@ $categories = db()->query('SELECT * FROM categories ORDER BY name')->fetchAll();
   </div>
 </div>
 
-<!-- Edit Report Form -->
-<form id="editReportForm" method="POST" action="<?= url('api/update_incident.php') ?>">
-    <?= csrf_field() ?>
-    <input type="hidden" name="_method" value="PUT">
-    <input type="hidden" name="incident_id" value="<?= $incident['id'] ?>">
+<script>
+document.getElementById('editReportForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
 
-    <input type="hidden" name="user_id" value="<?= $user['id'] ?>">
+    const btn = this.querySelector('button[type="submit"]');
+    const originalText = btn.innerHTML;
 
-    <script>
-    // Form submission with loading state
-    document.getElementById('editReportForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-grow spinner-grow-sm me-2" role="status" aria-hidden="true"></span>Saving...';
 
-        const btn = document.getElementById('editReportForm').querySelector('.btn-danger');
-        const originalText = btn.innerHTML;
+    try {
+        const form = new FormData(this);
 
-        // Show loading state
-        btn.disabled = true;
-        btn.innerHTML = '<span class="spinner-grow spinner-grow-sm me-2" role="status" aria-hidden="true"></span>Saving...';
+        const response = await fetch('<?= url('api/update_incident.php') ?>', {
+            method: 'PUT',
+            body: form
+        });
 
-        try {
-            const form = new FormData(this);
+        const result = await response.json();
 
-            const response = await fetch('api/update_incident.php', {
-                method: 'PUT',
-                body: form
-            });
-
-            const result = await response.json();
-
-            if (result.success) {
-                // Show success toast
-                const toastContainer = document.createElement('div');
-                toastContainer.className = 'toast align-items-center text-bg-success border-0';
-                toastContainer.setAttribute('role', 'alert');
-                toastContainer.setAttribute('aria-live', 'assertive');
-                toastContainer.innerHTML = `
+        if (result.success) {
+            const toastContainer = document.createElement('div');
+            toastContainer.className = 'toast align-items-center text-bg-success border-0 position-fixed top-0 end-0 m-3';
+            toastContainer.setAttribute('role', 'alert');
+            toastContainer.setAttribute('aria-live', 'assertive');
+            toastContainer.innerHTML = `
+                <div class="d-flex">
                     <div class="toast-body">
                         <i class="bi bi-check-circle me-2"></i> Report updated successfully!
                     </div>
-                `;
-                document.body.appendChild(toastContainer);
-                const toast = new bootstrap.Toast(toastContainer);
-                toast.show();
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            `;
+            document.body.appendChild(toastContainer);
+            const toast = new bootstrap.Toast(toastContainer);
+            toast.show();
 
-                // Redirect back to report view after a short delay
-                setTimeout(() => {
-                    window.location.href = '<?= url('citizen/report_view.php?id=' . $incident['id']) ?>';
-                }, 1500);
-            } else {
-                // Show error
-                alert('Error: ' + (result.message ?? 'Failed to update report'));
-            }
-        } catch (err) {
-            console.error('Update error:', err);
-            alert('Failed to connect to server. Please try again.');
-        } finally {
-            // Restore button state
-            btn.disabled = false;
-            btn.innerHTML = '<i class="bi bi-save me-2"></i> Save Changes';
+            setTimeout(() => {
+                window.location.href = '<?= url('citizen/report_view.php?id=' . $incident['id']) ?>';
+            }, 1200);
+        } else {
+            alert('Error: ' + (result.message ?? 'Failed to update report'));
         }
-    });
-    </script>
-</form>
+    } catch (err) {
+        console.error('Update error:', err);
+        alert('Failed to connect to server. Please try again.');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+    }
+});
+</script>
 
 <?php require __DIR__ . '/../includes/footer.php'; ?>

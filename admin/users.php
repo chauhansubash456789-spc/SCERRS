@@ -29,11 +29,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $deptId   = (int)($_POST['department_id'] ?? 0);
         $password = (string)($_POST['password'] ?? '');
 
-        if ($name === '')                              $errors[] = 'Name is required.';
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = 'Valid email is required.';
-        if (!in_array($role, ['citizen', 'authority', 'admin'], true)) $errors[] = 'Invalid role.';
-        if ($role === 'authority' && !$deptId)         $errors[] = 'Authority users need a department.';
-        if (strlen($password) < 8)                     $errors[] = 'Password must be at least 8 characters.';
+        if ($name === '') {
+            $errors[] = 'Name is required.';
+        } elseif (preg_match('/[0-9]/', $name)) {
+            $errors[] = 'Name must not contain numeric values.';
+        }
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $errors[] = 'Valid email is required.';
+        }
+        if (!in_array($role, ['citizen', 'authority', 'admin'], true)) {
+            $errors[] = 'Invalid role.';
+        }
+        if ($role === 'authority' && !$deptId) {
+            $errors[] = 'Authority users need a department.';
+        }
+        if (strlen($password) < 8) {
+            $errors[] = 'Password must be at least 8 characters.';
+        }
 
         $dup = db()->prepare('SELECT id FROM users WHERE email = ?');
         $dup->execute([$email]);
@@ -74,7 +86,7 @@ require __DIR__ . '/../includes/header.php';
         <form method="post" novalidate>
           <?= csrf_field() ?>
           <input type="hidden" name="action" value="create">
-          <div class="mb-2"><input type="text" name="name" class="form-control" placeholder="Full name *" required></div>
+          <div class="mb-2"><input type="text" name="name" class="form-control" placeholder="Full name *" pattern="^[^0-9]+$" title="Name must not contain numeric values" required></div>
           <div class="mb-2"><input type="email" name="email" class="form-control" placeholder="Email *" required></div>
           <div class="mb-2"><input type="tel" name="phone" class="form-control" placeholder="Phone"></div>
           <div class="mb-2 row g-2">

@@ -76,14 +76,14 @@ require __DIR__ . '/../includes/header.php';
           <div><?= severity_badge($incident['severity']) ?> <?= status_badge($incident['status']) ?></div>
         </div>
         <!-- Edit Report Button -->
-<?php if ($incident['status'] === 'pending'): ?>
-  <div class="d-flex gap-2 mt-2">
-    <a href="<?= url('citizen/edit_report.php?id=' . $incident['id']) ?>" class="btn btn-outline-primary flex-grow">
-      <i class="bi bi-pencil me-2"></i> Edit Report
-    </a>
-  </div>
-<?php endif; ?>
-<hr>
+        <?php if ($incident['status'] === 'pending'): ?>
+          <div class="d-flex gap-2 mt-2">
+            <a href="<?= url('citizen/edit_report.php?id=' . $incident['id']) ?>" class="btn btn-outline-primary">
+              <i class="bi bi-pencil me-1"></i> Edit Report
+            </a>
+          </div>
+        <?php endif; ?>
+        <hr>
         <p class="mb-2" style="white-space:pre-wrap"><?= nl2br(e($incident['description'])) ?></p>
         <ul class="list-unstyled small text-muted mb-0">
           <li><i class="bi bi-tags"></i> Type: <?= e($incident['category_name']) ?> &rarr; handled by <strong><?= e($incident['department_name']) ?></strong></li>
